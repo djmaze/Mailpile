@@ -288,31 +288,43 @@
   </ul>
 </div>
 
-<script src="/static/js/mailpile.js"></script>
+<script src="/static/js/new-mailpile.js"></script>
 <script>
 mailpile.instance = {
  "command": "{{ command }}",
  "args": "{{ args }}",
  "search_terms": "{% for term in result.search_terms %}{{term}}{% if not loop.last %} {% endif %}{%endfor%}"
 }
-// Set View Size
-$('#pile-results').hide();
+
+var App = (function ($, Backbone, global) {
+
+  var init = function() {
+
+    // Models
+    global.EmoomeSettings  = new EmoomeSettings();
+    global.UIMessages      = new UIMessages();
+
+    // Views
+    global.Lightbox = new LightboxView({ el: $('body') });
+    global.Navigation = new NavigationView({ el: $('#navigation') });
+    global.AuthView	= new AuthView({ el: $('#content') });
+
+		// Routers
+		global.Router = new MailpileRouter($('#content'));
+    global.SetupRouter = new SetupRouter($('#content'));
+		
+    // Start Backbone History
+    Backbone.history.start();
+  };
+
+  return { init: init };
+
+} (jQuery, Backbone, window));
+
+$(document).ready(function()
+{
+  App.init();
+});
 </script>
-<script src="/static/js/app/global.js"></script>
-<script src="/static/js/app/bulk_actions.js"></script>
-<script src="/static/js/app/notifications.js"></script>
-<script src="/static/js/app/tooltips.js"></script>
-<script src="/static/js/app/keybindings.js"></script>
-<script src="/static/js/app/gpg.js"></script>
-<script src="/static/js/app/compose.js"></script>
-<script src="/static/js/app/pile.js"></script>
-<script src="/static/js/app/search.js"></script>
-<script src="/static/js/app/thread.js"></script>
-<script src="/static/js/app/contacts.js"></script>
-<script src="/static/js/app/tags.js"></script>
-<script src="/static/js/app/settings.js"></script>
-{% for asset in get_assets("javascript") %}<script src="/static/{{asset}}"></script>
-{% endfor %}
-<script src="/jsapi/as.js"></script>
 </body>
 </html>
